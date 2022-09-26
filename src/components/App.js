@@ -1,12 +1,16 @@
 import React from 'react';
-import Main from "./Main";
-import Header from "./Header";
-import Footer from "./Footer";
+import { Switch, Route, Redirect } from 'react-router-dom';
+import Main from './Main';
+import Header from './Header';
+import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import Login from './Login';
+import ProtectedRoute from './ProtectedRoute';
+import Register from './Register';
 import {api} from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
@@ -19,6 +23,7 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser,setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -99,18 +104,39 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser} >
       <div className="App">
-        <div className="page">
-          <Header />
-          <Main onEditAvatar = {handleEditAvatarClick} onEditProfile={handleEditProfileClick} onAddPlace ={handleAddPlaceClick} onCardClick = {handleCardClick} cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
-          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
-          <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} /> 
-          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleUpdateAddPlace} />
-          <PopupWithForm onClose = {closeAllPopups} active = {false} name = {'deleteCard'} title = {'Вы уверены?'} children = {<input type="submit" value="Да" className="popup__button-save popup__button-save_delete" />}/>
-          <ImagePopup active = {isImagePopupOpen} onClose = {closeAllPopups} card={selectedCard} />
-
-          <Footer />
-        </div>
+          <div className="page">
+            <Header />
+            <Switch>
+              <ProtectedRoute path="/main" 
+                compoment={Main}
+                onEditAvatar = {handleEditAvatarClick} 
+                onEditProfile={handleEditProfileClick} 
+                onAddPlace ={handleAddPlaceClick} 
+                onCardClick = {handleCardClick} 
+                cards={cards} 
+                onCardLike={handleCardLike} 
+                onCardDelete={handleCardDelete}
+               loggedIn={loggedIn}>
+              </ProtectedRoute>
+              <Route path="/sing-in" >
+                <Login />
+              </Route>
+              <Route path="/sing-up" >
+                <Register />
+              </Route>
+              <Route exact path="/">
+                {loggedIn ?  <Redirect to="/main" /> : <Redirect to="/sing-up" />}
+              </Route>
+            </Switch>
+             <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
+            <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} /> 
+            <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleUpdateAddPlace} />
+            <PopupWithForm onClose = {closeAllPopups} active = {false} name = {'deleteCard'} title = {'Вы уверены?'} children = {<input type="submit" value="Да" className="popup__button-save popup__button-save_delete" />}/>
+            <ImagePopup active = {isImagePopupOpen} onClose = {closeAllPopups} card={selectedCard} />
+          </div>
       </div>
+      
+      
     </CurrentUserContext.Provider>
   );
 }
