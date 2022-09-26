@@ -1,13 +1,14 @@
-.popup__container {
+.login {
   position: relative;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  bottom: 0;
 }
 
-@media screen and (max-width: 425px) {
+/*@media screen and (max-width: 425px) {
   .popup__container {
     max-width: 100%;
   }
-}
+}*/
