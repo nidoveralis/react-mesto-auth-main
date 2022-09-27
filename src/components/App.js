@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import Main from './Main';
 import Header from './Header';
 import Footer from './Footer';
@@ -15,6 +15,7 @@ import {api} from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function App() {
+  const history = useHistory();
   const userContext = React.useContext(CurrentUserContext);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -24,6 +25,27 @@ function App() {
   const [currentUser,setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [loggedIn, setLoggedIn] = React.useState(false);
+  const [userData, setUserData] = React.useState('');
+
+  function openMainComponent() {
+    changeLoggedIn();
+    history.push('/');
+  };
+
+  function logIn(data) {
+    api.signIn(data).then(()=>{
+      openMainComponent();
+    });
+  };
+  
+  function removeUserToken() {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+  };
+
+  function changeLoggedIn() {
+    setLoggedIn(true);
+  };
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -38,7 +60,7 @@ function App() {
   };
 
   function handleCardClick(card) {
-    setSelectedCard(card)
+    setSelectedCard(card);
     setIsImagePopupOpen(true);
   };
 
@@ -46,22 +68,32 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
-    setIsImagePopupOpen(false)
+    setIsImagePopupOpen(false);
     setSelectedCard({});
   };
+
+  React.useEffect(()=>{
+    const jwt = localStorage.getItem('jwt');
+      if(jwt) {
+        api.checkToken(jwt).then(data=>{
+          setUserData(data.data.email);
+          openMainComponent();
+        });
+      }
+  }, [loggedIn]);
 
   React.useEffect(()=>{
     api.getUserInfo().then(data=>{
       setCurrentUser(data);
     })
-    .catch(e=>console.log(e))
+    .catch(e=>console.log(e));
   }, []);
 
   React.useEffect(() => {
     api.getInitialCards().then(data=>{
       setCards(data);
     })
-    .catch(e=>console.log(e))
+    .catch(e=>console.log(e));
   }, []);
 
   function handleUpdateUser(user) {
@@ -105,9 +137,9 @@ function App() {
     <CurrentUserContext.Provider value={currentUser} >
       <div className="App">
           <div className="page">
-            <Header />
+            <Header message={userData} onSingOut={removeUserToken}/>
             <Switch>
-              <ProtectedRoute path="/main" 
+              <ProtectedRoute exact path="/" 
                 compoment={Main}
                 onEditAvatar = {handleEditAvatarClick} 
                 onEditProfile={handleEditProfileClick} 
@@ -118,17 +150,20 @@ function App() {
                 onCardDelete={handleCardDelete}
                loggedIn={loggedIn}>
               </ProtectedRoute>
-              <Route path="/sing-in" >
-                <Login />
+              <Route path="/signin" >
+                <Login handleLogin={changeLoggedIn} onLogin={logIn}/>
               </Route>
-              <Route path="/sing-up" >
+              <Route path="/signup" >
                 <Register />
               </Route>
-              <Route exact path="/">
-                {loggedIn ?  <Redirect to="/main" /> : <Redirect to="/sing-up" />}
+              <Route path="*" >
+                <Redirect to="/" />
+              </Route>
+              <Route >
+                {loggedIn ?  <Redirect to="/" /> : <Redirect to="/signin" />}
               </Route>
             </Switch>
-             <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
+            <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
             <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} /> 
             <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleUpdateAddPlace} />
             <PopupWithForm onClose = {closeAllPopups} active = {false} name = {'deleteCard'} title = {'Вы уверены?'} children = {<input type="submit" value="Да" className="popup__button-save popup__button-save_delete" />}/>
