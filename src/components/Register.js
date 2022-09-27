@@ -1,22 +1,48 @@
-import {Link} from 'react-router-dom';
+import {api} from '../utils/Api';
+import React from "react";
+import { Link, withRouter, useHistory } from "react-router-dom";
 
 function Register() {
+  const history = useHistory(); 
+  const [emailValue, setEmailValue] = React.useState('');
+  const [passwordValue, setPasswordValue] = React.useState('');
+
+  function emailInputValue(e) {
+    setEmailValue(e.target.value);
+  };
+
+  function passwordInputValue(e) {
+    setPasswordValue(e.target.value);
+  };
+
+  function userSignUp() {
+    const { password,email } = {
+      password: passwordValue,
+      email: emailValue
+    };
+    api.signUp(password,email).then(data=>{
+      if(data){
+        history.push('/signin')
+      }
+    })
+  }
+
   return(
     <div className="login">
       <form className="login__form">
         <h2 className="login__title">Регистрация</h2>
         <fieldset className="login__field">
-          <input type='text' className="login__input" name="mail" placeholder="Email" />
+          <input type='text' className="login__input" name="mail" placeholder="Email" onChange={emailInputValue} />
         </fieldset>
         <fieldset className="login__field">
-        <input type='text' className="login__input" name="parol" placeholder="Пароль" />
+        <input type='password' className="login__input" name="password" placeholder="Пароль" onChange={passwordInputValue} />
         </fieldset>
       </form>
       <div className="login__buttons">
-        <button className="login__button">Зарегистрироваться</button>
-        <Link to="/sing-in" className="login__sing-in">Уже зарегистрированы? Войти</Link>
+        <button className="login__button" onClick={userSignUp}>Зарегистрироваться</button>
+        <Link to="./signin" className="login__sing-in">Уже зарегистрированы? Войти</Link>
       </div>
     </div>
   )
 };
-export default Register;
+export default withRouter(Register);
