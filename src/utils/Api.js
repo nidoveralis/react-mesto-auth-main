@@ -97,6 +97,51 @@ import config from './utils'
     )
     .then(res=>this._getResponseData(res))
   };
+
+  signUp(password,email) {
+    console.log(password,email)
+    return fetch('https://auth.nomoreparties.co/signup', {
+      method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({password,email})
+    },
+    )
+    .then(res=>this._getResponseData(res))
+  };
+
+  signIn(data) {
+    return fetch('https://auth.nomoreparties.co/signin', {
+      method: 'POST',
+      headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+    },
+    )
+    .then(res=>this._getResponseData(res)).then((data)=>{
+      if (data.token){
+        localStorage.setItem('jwt', data.token);
+        return data;
+      } else {
+        return;
+      }
+    })
+  };
+
+  checkToken(token) {
+    return fetch ('https://auth.nomoreparties.co/users/me', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        "Authorization" : `Bearer ${token}`
+      },
+    })
+    .then(res=>this._getResponseData(res))
+  };
 };
 
 export const api = new Api(config);

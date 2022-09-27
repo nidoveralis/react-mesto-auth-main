@@ -1,11 +1,12 @@
-.popup__button-save {
+.login__button {
   cursor: pointer;
-  color: #fff;
+  color: #000;
   opacity: 1;
-  background-color: #000;
+  background-color: #fff;
   font-weight: 400;
   align-items: center;
   font-family: 'Inter', Arial, sans-serif;
+  border: none;
   border-radius: 2px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -18,21 +19,21 @@
   -o-transition: opacity .3s linear;
 }
 
-.popup__button-save:hover {/*.popup__submit:hover */
+.login__button:hover {
   opacity: .8;
 }
 
 @media screen and (min-width: 461px) {
-  .popup__button-save {
-    margin: 20px auto 37px;
+  .login__button {
+    margin: 20px auto 15px;
     font-size: 18px;
     line-height: 22px;
-    padding: 14px 132px;
+    padding: 14px 87px;
   }
 }
 
 @media screen and (max-width: 460px) {
-  .popup__button-save {
+  .login__button {
     font-size: 14px;
     line-height: 16px;
     padding: 15px 82px;
