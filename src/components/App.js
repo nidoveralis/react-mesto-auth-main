@@ -79,6 +79,7 @@ function App() {
     setIsImagePopupOpen(false);
     setInfoTooltipPopupOpen(false);
     setSelectedCard({});
+    //setAnswer('')
   };
 
   React.useEffect(()=>{
@@ -160,7 +161,7 @@ function App() {
                loggedIn={loggedIn}>
               </ProtectedRoute>
               <Route path="/signin" >
-                <Login handleLogin={changeLoggedIn} onLogin={logIn}/>
+                <Login handleLogin={changeLoggedIn} onLogin={logIn} answer={handleInfoTool}/>
               </Route>
               <Route path="/signup" >
                 <Register answer={handleInfoTool}/>

@@ -15,18 +15,18 @@ function Register(props) {
     setPasswordValue(e.target.value);
   };
 
-  function userSignUp() {
+  function onRegister() {
     const { password,email } = {
       password: passwordValue,
       email: emailValue
     };
     api.signUp(password,email).then((data)=>{
       if(data){
-        props.answer(data);
+        props.answer('success');
         history.push('/signin');
       }
     })
-    //.catch(e=>answer)
+    .catch(()=>props.answer('error'))
   }
 
   return(
@@ -41,7 +41,7 @@ function Register(props) {
         </fieldset>
       </form>
       <div className="login__buttons">
-        <button className="login__button" onClick={userSignUp}>Зарегистрироваться</button>
+        <button className="login__button" onClick={onRegister}>Зарегистрироваться</button>
         <Link to="./signin" className="login__sing-in">Уже зарегистрированы? Войти</Link>
       </div>
     </div>
