@@ -11,6 +11,7 @@ import AddPlacePopup from './AddPlacePopup';
 import Login from './Login';
 import ProtectedRoute from './ProtectedRoute';
 import Register from './Register';
+import InfoTooltip from './InfoTooltip';
 import {api} from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
@@ -21,11 +22,13 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
+  const [infoTooltipPopupOpen, setInfoTooltipPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser,setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [userData, setUserData] = React.useState('');
+  const [answer, setAnswer] = React.useState('');
 
   function openMainComponent() {
     changeLoggedIn();
@@ -59,6 +62,11 @@ function App() {
     setIsAddPlacePopupOpen(true);
   };
 
+  function handleInfoTool(data) {
+    setAnswer(data);
+    setInfoTooltipPopupOpen(true);
+  };
+
   function handleCardClick(card) {
     setSelectedCard(card);
     setIsImagePopupOpen(true);
@@ -69,6 +77,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsImagePopupOpen(false);
+    setInfoTooltipPopupOpen(false);
     setSelectedCard({});
   };
 
@@ -154,7 +163,7 @@ function App() {
                 <Login handleLogin={changeLoggedIn} onLogin={logIn}/>
               </Route>
               <Route path="/signup" >
-                <Register />
+                <Register answer={handleInfoTool}/>
               </Route>
               <Route path="*" >
                 <Redirect to="/" />
@@ -168,6 +177,7 @@ function App() {
             <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleUpdateAddPlace} />
             <PopupWithForm onClose = {closeAllPopups} active = {false} name = {'deleteCard'} title = {'Вы уверены?'} children = {<input type="submit" value="Да" className="popup__button-save popup__button-save_delete" />}/>
             <ImagePopup active = {isImagePopupOpen} onClose = {closeAllPopups} card={selectedCard} />
+            <InfoTooltip active = {infoTooltipPopupOpen} onClose = {closeAllPopups} answer={answer}/>
           </div>
       </div>
       

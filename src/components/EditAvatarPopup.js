@@ -5,7 +5,8 @@ function EditAvatarPopup({ onClose, isOpen, onUpdateAvatar}) {
 
   const avatarRef = React.createRef();
 
-  const childrenAvatar = <>
+  const childrenAvatar = 
+      <>
         <fieldset className="popup__field">
           <input  id="avatar" type="url" className="popup__input popup__input_type_avatar" name="avatar" minLength="2" maxLength="200" placeholder="Ссылка на картинку" required ref={avatarRef} />
           <span className="avatar-error input-error" /> 

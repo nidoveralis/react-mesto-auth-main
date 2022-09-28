@@ -2,11 +2,11 @@ import {api} from '../utils/Api';
 import React from "react";
 import { Link, withRouter, useHistory } from "react-router-dom";
 
-function Register() {
+function Register(props) {
+  //console.log(props)
   const history = useHistory(); 
   const [emailValue, setEmailValue] = React.useState('');
   const [passwordValue, setPasswordValue] = React.useState('');
-
   function emailInputValue(e) {
     setEmailValue(e.target.value);
   };
@@ -20,11 +20,13 @@ function Register() {
       password: passwordValue,
       email: emailValue
     };
-    api.signUp(password,email).then(data=>{
+    api.signUp(password,email).then((data)=>{
       if(data){
-        history.push('/signin')
+        props.answer(data);
+        history.push('/signin');
       }
     })
+    //.catch(e=>answer)
   }
 
   return(
