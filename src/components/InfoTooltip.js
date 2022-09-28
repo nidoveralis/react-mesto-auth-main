@@ -1,5 +1,4 @@
 import React from 'react';
-import PopupWithForm from './PopupWithForm';
 import errorImg from '../images/popup__error.jpg';
 import successImg from '../images/popup__ok.jpg';
 
