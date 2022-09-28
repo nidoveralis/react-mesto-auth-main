@@ -10,14 +10,14 @@ function Header(props) {
       <div className='header__message'>
         <Switch>
           <Route path='/signup'>
-            <Link to='/signin' className="login__sing-in header__title">Вход</Link>
+            <Link to='/signin' className="header__button">Вход</Link>
           </Route>
           <Route path='/signin'>
-            <Link to='/signup' className="login__sing-in header__title">Регистрация</Link>
+            <Link to='/signup' className="header__button">Регистрация</Link>
           </Route>
           <Route path='/'>
             <p className="header__title">{props.message}</p>
-            <button className="login__sing-in header__title" onClick={props.onSingOut}>Выход</button>
+            <button className="header__button" onClick={props.onSingOut}>Выйти</button>
           </Route>
         </Switch>
       </div>

@@ -1,4 +1,3 @@
-
 function PopupWithForm({onClose, active, name, title, children, onSubmit}) {
 
   return(

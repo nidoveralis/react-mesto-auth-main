@@ -99,7 +99,6 @@ import config from './utils'
   };
 
   signUp(password,email) {
-    console.log(password,email)
     return fetch('https://auth.nomoreparties.co/signup', {
       method: 'POST',
     headers: {

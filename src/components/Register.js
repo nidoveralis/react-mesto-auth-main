@@ -2,11 +2,11 @@ import {api} from '../utils/Api';
 import React from "react";
 import { Link, withRouter, useHistory } from "react-router-dom";
 
-function Register() {
+function Register(props) {
+  //console.log(props)
   const history = useHistory(); 
   const [emailValue, setEmailValue] = React.useState('');
   const [passwordValue, setPasswordValue] = React.useState('');
-
   function emailInputValue(e) {
     setEmailValue(e.target.value);
   };
@@ -15,16 +15,18 @@ function Register() {
     setPasswordValue(e.target.value);
   };
 
-  function userSignUp() {
+  function onRegister() {
     const { password,email } = {
       password: passwordValue,
       email: emailValue
     };
-    api.signUp(password,email).then(data=>{
+    api.signUp(password,email).then((data)=>{
       if(data){
-        history.push('/signin')
+        props.answer('success');
+        history.push('/signin');
       }
     })
+    .catch(()=>props.answer('error'))
   }
 
   return(
@@ -39,7 +41,7 @@ function Register() {
         </fieldset>
       </form>
       <div className="login__buttons">
-        <button className="login__button" onClick={userSignUp}>Зарегистрироваться</button>
+        <button className="login__button" onClick={onRegister}>Зарегистрироваться</button>
         <Link to="./signin" className="login__sing-in">Уже зарегистрированы? Войти</Link>
       </div>
     </div>
